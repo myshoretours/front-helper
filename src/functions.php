@@ -1,6 +1,7 @@
 <?php
 
 require 'recapchalib.php'; 
+$config_var = [];
 
 if(file_exists('.env')) {
     $dotenv = Dotenv\Dotenv::create($_ENV['APP_BASE_PATH']);
@@ -15,8 +16,17 @@ function env($first, $second=null) {
     return $return;
 }
 
-function config($variable)
+function config($variable, $value = null)
 {
+    global $config_var;
+    if(!is_null($value)) {
+        // Lets save the data
+        $config_var[$variable] = $value;
+        return;
+    }
+    if(isset($config_var[$variable])) {
+        return $config_var[$variable];
+    }
     $configs = include($_ENV['APP_BASE_PATH'].'/config/app.php');
     return $configs[$variable] ?? null;
 }
