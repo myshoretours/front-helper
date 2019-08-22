@@ -9,7 +9,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	<div class="form-group" id="group_date">
 	    <label for="date">Select your tour date</label>
 	    <input type="text" class="form-control" name="date" id="date" aria-describedby="date" value="<?= $_POST["date"] ?>" autocomplete="off">
-	    <img alt="Image" class="lazyload ui-datepicker-trigger" data-src="<?= config('cdn.url') ?>/assets/img/calendar.gif">
+	    <img alt="Image" class="ui-datepicker-trigger" src="<?= config('cdn.url') ?>/assets/img/calendar.gif">
 	</div>
 	<div class="form-group" id="group_departure">
 	    <label for="departure">Select depart time</label>

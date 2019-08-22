@@ -82,7 +82,7 @@ $reservation = confirmReservation($_POST["item_number"], $_POST["txn_id"], $_POS
                     <h3 class="bold">Can't you print your reservation right now?</h3>
                     <span>No worries. We've sent the Reservation to your email at...<br>
                     <span class="grey text-center"><?= $reservation->client->email ?></span></span>
-                    <img alt="Image" data-src="<?= config('cdn.url') ?>/assets/img/email.svg" class="lazyload img-fluid mt-4" width="60" height="60">
+                    <img alt="Image" src="<?= config('cdn.url') ?>/assets/img/email.svg" class="img-fluid mt-4" width="60" height="60">
                 </div>
             </div>
         </div>
