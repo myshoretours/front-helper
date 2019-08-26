@@ -208,7 +208,7 @@ function pay($reservation)
 
     $querystring = "?business=".urlencode(config('paypal.email'))."&";  
     $querystring .= "item_name=".urlencode($reservation->tour->name)."&";
-    $querystring .= "amount=".urlencode($reservation->total)."&";
+    $querystring .= "amount=".urlencode($reservation->total_to_pay)."&";
 
     //loop for posted values and append to querystring
     foreach($datos_paypal as $key => $value){

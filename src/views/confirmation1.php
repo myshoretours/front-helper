@@ -63,12 +63,26 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	    <input type="text" class="form-control" id="comments" name="hotel_name" placeholder="e.g. Hilton Resort / Carnival Valor" disabled="">
 	</div>
 </div>
-<div class="alert bg-grey grey bold font26 d-flex align-items-center mb42" role="alert">
+<div class="alert bg-grey grey bold font26 d-flex align-items-center mb10" role="alert">
     <div class="mr-auto">
         <span>Total</span>
     </div>
     <div>
-        <span id="reservation_total"></span>
+        <span id="reservation_total">--</span>
+    </div>
+</div>
+<div class="alert bg-grey grey bold font16 d-flex align-items-center mb42" role="alert">
+    <div class="mr-auto">
+        <span>You Pay Now</span>
+        <?php if($tour->charge_type!='all') : ?>
+        	<br /> <span>Your Balance</span>
+        <?php endif; ?>
+    </div>
+    <div>
+        <span id="reservation_pay">--</span>
+        <?php if($tour->charge_type!='all') : ?>
+        	<br /><span id="reservation_balance">--</span>
+        <?php endif; ?>
     </div>
 </div>
 <div class="controls">
@@ -76,4 +90,6 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
     <input type="hidden" id="Base_Pax_Number" value="<?= $tour->min_pax ?>">
     <input type="hidden" id="Max_Pax_Number" value="<?= $_POST['travelers'] ?>">
     <input type="hidden" id="options" value='<?= createOptions($tour) ?>'>
+    <input type="hidden" id="tour_charge_type" value='<?= $tour->charge_type ?>'>
+    <input type="hidden" id="tour_charge_data" value='<?= $tour->charge_data ?>'>
 </div>
