@@ -144,6 +144,7 @@ function createOptions($tour)
                 'Senior_Price' => $option->senior_price,
                 'Departure_ID' => $departure->id,
                 'Departure_Hour' => $departure->name,
+                'Partial_Data' => $option->partial_data,
             ];
             $return[] = $array;
         }

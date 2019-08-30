@@ -63,26 +63,28 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	    <input type="text" class="form-control" id="comments" name="hotel_name" placeholder="e.g. Hilton Resort / Carnival Valor" disabled="">
 	</div>
 </div>
-<div class="alert bg-grey grey bold font26 d-flex align-items-center mb10" role="alert">
+<div class="alert bg-grey grey bold font16 d-flex align-items-center mb10" role="alert">
     <div class="mr-auto">
         <span>Total</span>
+        <?php if($tour->charge_type!='all') : ?>
+        	 <br /><span >Balance <small>(Paid at Meeting Point)</small></span>
+        <?php endif; ?>
     </div>
     <div>
         <span id="reservation_total">--</span>
+        <?php if($tour->charge_type!='all') : ?>
+        	<br /><span id="reservation_balance" >--</span>
+        <?php endif; ?>
     </div>
 </div>
-<div class="alert bg-grey grey bold font16 d-flex align-items-center mb42" role="alert">
+<div class="alert bg-grey grey bold font26 d-flex align-items-center mb42" role="alert">
     <div class="mr-auto">
+
         <span>You Pay Now</span>
-        <?php if($tour->charge_type!='all') : ?>
-        	<br /> <span>Your Balance</span>
-        <?php endif; ?>
+        
     </div>
     <div>
         <span id="reservation_pay">--</span>
-        <?php if($tour->charge_type!='all') : ?>
-        	<br /><span id="reservation_balance">--</span>
-        <?php endif; ?>
     </div>
 </div>
 <div class="controls">
