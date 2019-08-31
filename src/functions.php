@@ -152,8 +152,19 @@ function createOptions($tour)
     return json_encode($return);
 }
 
-function reservate($client_id, $date, $tour_departure_id, $tour_option, $hotel_name, $pax_adults, $pax_kids, $pax_infant, $pax_senior)
+function reservate($data)
 {
+    $client_id = $data["customer_ID"];
+    $date = $data["date"];
+    $tour_departure_id = $data["departure"];
+    $tour_option = $data["tour-option"];
+    $hotel_name = $data["hotel_name"];
+    $pax_adults = $data["adults"] ?? '0,0';
+    $pax_kids = $data["kids"] ?? '0,0';
+    $pax_infant = $data["infants"] ?? '0,0';
+    $pax_senior = $data["senior"] ?? '0,0';
+    $total_payed = $data["to_pay"];
+
     // User stack
     $user_agent = $_SERVER['HTTP_USER_AGENT'];
     $access_key = 'e129c241b8a9e24224966ab364ae3147';
@@ -183,9 +194,9 @@ function reservate($client_id, $date, $tour_departure_id, $tour_option, $hotel_n
     $seniors = $pax_senior[0];
     $tour_option_id = $tour_option[0];
   
-    $ip_costumer = $_SERVER['REMOTE_ADDR'];  
+    $ip_costumer = $_SERVER['REMOTE_ADDR'];
     
-    $data = compact('client_id', 'tour_id', 'tour_departure_id', 'tour_option_id', 'kids', 'infants', 'adults', 'seniors', 'total', 'hotel_name', 'date', 'sell_url', 'ip_costumer', 'user_agent');
+    $data = compact('client_id', 'tour_departure_id', 'tour_option_id', 'kids', 'infants', 'adults', 'seniors', 'total', 'hotel_name', 'date', 'sell_url', 'ip_costumer', 'user_agent', 'total_payed');
     $url = apiUrl('/api/tours/'.config('backend.tour_id').'/reservate');
     $response = post($url, $data);
     return json_decode($response);
@@ -209,7 +220,7 @@ function pay($reservation)
 
     $querystring = "?business=".urlencode(config('paypal.email'))."&";  
     $querystring .= "item_name=".urlencode($reservation->tour->name)."&";
-    $querystring .= "amount=".urlencode($reservation->total_to_pay)."&";
+    $querystring .= "amount=".urlencode($reservation->total_payed)."&";
 
     //loop for posted values and append to querystring
     foreach($datos_paypal as $key => $value){

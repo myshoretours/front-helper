@@ -94,4 +94,5 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
     <input type="hidden" id="options" value='<?= createOptions($tour) ?>'>
     <input type="hidden" id="tour_charge_type" value='<?= $tour->charge_type ?>'>
     <input type="hidden" id="tour_charge_data" value='<?= $tour->charge_data ?>'>
+    <input type="hidden" name="to_pay">
 </div>
