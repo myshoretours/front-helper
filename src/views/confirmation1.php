@@ -28,7 +28,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	</div>
 	<?php if($tour->accept_adults) : ?>
 	    <div class="form-group" id="group_adults">
-	        <label for="adults">Adults - (Age 13+)</label>
+	        <label for="adults">Adults - (<?= $tour->adults_description ?>)</label>
 	        <select class="custom-select" id="adults" name="adults" onchange="calc_form('adults')" disabled="">
 	            <option value="0,0">Please Select Depart Time</option>
 	        </select>
@@ -36,7 +36,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	<?php endif; ?>
 	<?php if($tour->accept_seniors) : ?>
 	    <div class="form-group" id="group_senior">
-	        <label for="senior">Senior - (Age 65+)</label>
+	        <label for="senior">Senior - (<?= $tour->seniors_description ?>)</label>
 	        <select class="custom-select" id="senior" name="senior" onchange="calc_form('senior')" disabled="">
 	            <option value="0,0">Please Select Depart Time</option> 
 	        </select>
@@ -44,7 +44,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	<?php endif; ?>
 	<?php if($tour->accept_kids) : ?>
 	    <div class="form-group" id="group_kids">
-	        <label for="kids">Kids - (Age 1-12)</label>
+	        <label for="kids">Kids - (<?= $tour->kids_description ?>)</label>
 	        <select class="custom-select" id="kids" name="kids" onchange="calc_form('kids')" disabled="">
 	            <option value="0,0">Please Select Depart Time</option>
 	        </select>
@@ -52,7 +52,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	<?php endif; ?>
 	<?php if($tour->accept_infants) : ?>
 	    <div class="form-group" id="group_infants">
-	        <label for="infants">Infants - (Age 0-1)</label>
+	        <label for="infants">Infants - (<?= $tour->infants_description ?>)</label>
 	        <select class="custom-select" id="infants" name="infants" onchange="calc_form('infants')" disabled="">
 	            <option value="0,0">Please Select Depart Time</option>
 	        </select>
