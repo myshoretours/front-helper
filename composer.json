@@ -14,7 +14,8 @@
     ],
     "require": {
         "vlucas/phpdotenv": "^3.4",
-        "tightenco/collect": "*"
+        "tightenco/collect": "*",
+        "stripe/stripe-php": "*"
     },
     "autoload": {
         "files": [
