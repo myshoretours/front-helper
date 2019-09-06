@@ -13,23 +13,23 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	</div>
 	<div class="form-group" id="group_departure">
 	    <label for="departure">Select depart time</label>
-	    <select class="custom-select border border-primary" id="departure" name="departure" onchange="calc_form('deaperture');">
+	    <select class="custom-select border border-primary" id="departure" name="departure">
 	        <option value="0,0">First Select Depart Time</option>
 	        <?php foreach($tour->tour_departures as $departure) : ?>
-	            <option value="<?= $departure->id; ?>,<?= $departure->name ?>"><?= $departure->name ?></option>
+	            <option value="<?= $departure->id; ?>"><?= $departure->name ?></option>
 	        <?php endforeach; ?>
 	    </select>
 	</div>
 	<div class="form-group" id="group_tour-option">
 	    <label for="tour-option">Select tour option</label>
-	    <select class="custom-select" id="tour-option" name="tour-option" onchange="calc_form()" disabled="">
-	        <option value="0,0">Please Select Depart Time</option>
+	    <select class="custom-select" id="tour-option" name="tour-option" disabled="">
+	        <option value="0">Please Select Depart Time</option>
 	    </select>
 	</div>
 	<?php if($tour->accept_adults) : ?>
 	    <div class="form-group" id="group_adults">
 	        <label for="adults">Adults - (<?= $tour->adults_description ?>)</label>
-	        <select class="custom-select" id="adults" name="adults" onchange="calc_form('adults')" disabled="">
+	        <select class="custom-select" id="adults" name="adults" onchange="calc_form(this)" disabled="">
 	            <option value="0,0">Please Select Depart Time</option>
 	        </select>
 	    </div>
@@ -37,7 +37,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	<?php if($tour->accept_seniors) : ?>
 	    <div class="form-group" id="group_senior">
 	        <label for="senior">Senior - (<?= $tour->seniors_description ?>)</label>
-	        <select class="custom-select" id="senior" name="senior" onchange="calc_form('senior')" disabled="">
+	        <select class="custom-select" id="senior" name="senior" onchange="calc_form(this)" disabled="">
 	            <option value="0,0">Please Select Depart Time</option> 
 	        </select>
 	    </div>
@@ -45,7 +45,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	<?php if($tour->accept_kids) : ?>
 	    <div class="form-group" id="group_kids">
 	        <label for="kids">Kids - (<?= $tour->kids_description ?>)</label>
-	        <select class="custom-select" id="kids" name="kids" onchange="calc_form('kids')" disabled="">
+	        <select class="custom-select" id="kids" name="kids" onchange="calc_form(this)" disabled="">
 	            <option value="0,0">Please Select Depart Time</option>
 	        </select>
 	    </div>
@@ -53,7 +53,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	<?php if($tour->accept_infants) : ?>
 	    <div class="form-group" id="group_infants">
 	        <label for="infants">Infants - (<?= $tour->infants_description ?>)</label>
-	        <select class="custom-select" id="infants" name="infants" onchange="calc_form('infants')" disabled="">
+	        <select class="custom-select" id="infants" name="infants" onchange="calc_form(this)" disabled="">
 	            <option value="0,0">Please Select Depart Time</option>
 	        </select>
 	    </div>

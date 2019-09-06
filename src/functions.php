@@ -204,12 +204,24 @@ function reservate($data)
 
 function pay($reservation)
 {
+    $tour = getTour();
+    if($tour->payment_type=='paypal') {
+        return payWithPaypal($reservation);
+    } else if($tour->payment_type=='stripe') {
+        return payWithStripe($reservation);
+    }
+    return 'Error';
+}
+
+function payWithPaypal($reservation)
+{
+    $tour = getTour();
     $names = explode(' ', $reservation->client->name);
   
     $datos_paypal = array(
         "cmd"             => "_xclick",
         "lc"              => "US",
-        "currency_code"   => 'USD',
+        "currency_code"   => $tour->payment_data->currency,
         "bn"              => "PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest",
         "first_name"      => $names[0] ?? 'ND',
         "last_name"       => $names[1] ?? 'ND',
@@ -218,7 +230,7 @@ function pay($reservation)
         'rm'              => 2,
     );
 
-    $querystring = "?business=".urlencode(config('paypal.email'))."&";  
+    $querystring = "?business=".urlencode($tour->payment_data->email)."&";  
     $querystring .= "item_name=".urlencode($reservation->tour->name)."&";
     $querystring .= "amount=".urlencode($reservation->total_payed)."&";
 
@@ -234,13 +246,37 @@ function pay($reservation)
 
     // Redirect to paypal IPN
     $paypal_site = 'https://www.paypal.com';
-    if(config('paypal.sandbox')) {
+    if($tour->payment_data->sandbox) {
         $paypal_site = 'https://www.sandbox.paypal.com';
     }
     $url = $paypal_site.'/cgi-bin/webscr'.$querystring;
     header('location:'.$url);
     exit();
 }
+
+function payWithStripe($reservation)
+{
+    $tour = getTour();
+    // Set your secret key: remember to change this to your live secret key in production
+    // See your keys here: https://dashboard.stripe.com/account/apikeys
+    \Stripe\Stripe::setApiKey($tour->payment_data->secret_key);
+
+    $session = \Stripe\Checkout\Session::create([
+        'payment_method_types' => ['card'],
+        'line_items' => [[
+            'name' => 'Tour Reservation for '.$tour->name,
+            'description' => 'For '.$reservation->total_passengers.' passangers',
+            'images' => [config('app.url').'/assets/img/stripe.jpg'],
+            'amount' => ($reservation->total_payed * 100), // Its with cents
+            'currency' => $tour->payment_data->currency,
+            'quantity' => 1,
+        ]],
+        'success_url' => config('app.url').'/thank-you',
+        'cancel_url' => config('app.url').'/payment-uncompleted',
+    ]);
+    return showFrontView('stripe-checkout', compact('tour', 'session'));
+}
+
 
 function confirmReservation($reservation_id, $confirmation, $email, $name)
 {
