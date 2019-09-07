@@ -159,11 +159,12 @@ function reservate($data)
     $tour_departure_id = $data["departure"];
     $tour_option = $data["tour-option"];
     $hotel_name = $data["hotel_name"];
-    $pax_adults = $data["adults"] ?? '0,0';
-    $pax_kids = $data["kids"] ?? '0,0';
-    $pax_infant = $data["infants"] ?? '0,0';
-    $pax_senior = $data["senior"] ?? '0,0';
+    $pax_adults = $data["adults"] ?? 0;
+    $pax_kids = $data["kids"] ?? 0;
+    $pax_infant = $data["infants"] ?? 0;
+    $pax_senior = $data["senior"] ?? 0;
     $total_payed = $data["to_pay"];
+    $total = $data["total"];
 
     // User stack
     $user_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -178,21 +179,14 @@ function reservate($data)
     $user_agent = $api_result['device']['type'];
 
     // Set variables
-    $date              = date('Y-m-d', strtotime($date));
-    $pax_adults        = explode(",",$pax_adults);
-    $pax_kids          = explode(",",$pax_kids);
-    $pax_infant        = explode(",",$pax_infant);
-    $pax_senior        = explode(",",$pax_senior);  
-    $tour_departure_id = explode(",",$tour_departure_id)[0];
-    $tour_option       = explode(",",$tour_option);
-    $sell_url          = $_SERVER["HTTP_HOST"];
+    $date     = date('Y-m-d', strtotime($date));
+    $sell_url = $_SERVER["HTTP_HOST"];
   
-    $total = $pax_adults[1] + $pax_kids[1] + $pax_senior[1] + $pax_infant[1]+ $tour_option[1];
-    $adults = $pax_adults[0];
-    $infants = $pax_infant[0];
-    $kids = $pax_kids[0];
-    $seniors = $pax_senior[0];
-    $tour_option_id = $tour_option[0];
+    $adults = $pax_adults;
+    $infants = $pax_infant;
+    $kids = $pax_kids;
+    $seniors = $pax_senior;
+    $tour_option_id = $tour_option;
   
     $ip_costumer = $_SERVER['REMOTE_ADDR'];
     
@@ -257,12 +251,11 @@ function payWithPaypal($reservation)
 function payWithStripe($reservation)
 {
     $tour = getTour();
-    // Set your secret key: remember to change this to your live secret key in production
-    // See your keys here: https://dashboard.stripe.com/account/apikeys
     \Stripe\Stripe::setApiKey($tour->payment_data->secret_key);
 
     $session = \Stripe\Checkout\Session::create([
         'payment_method_types' => ['card'],
+        'client_reference_id' => $reservation->id,
         'line_items' => [[
             'name' => 'Tour Reservation for '.$tour->name,
             'description' => 'For '.$reservation->total_passengers.' passangers',
@@ -271,15 +264,62 @@ function payWithStripe($reservation)
             'currency' => $tour->payment_data->currency,
             'quantity' => 1,
         ]],
-        'success_url' => config('app.url').'/thank-you',
+        'success_url' => config('app.url').'/thank-you?id='.$reservation->id,
         'cancel_url' => config('app.url').'/payment-uncompleted',
+        'payment_intent_data' => [
+            'description' => 'Payment for reservation #'.$reservation->id
+        ]
     ]);
     return showFrontView('stripe-checkout', compact('tour', 'session'));
 }
 
-
-function confirmReservation($reservation_id, $confirmation, $email, $name)
+function getPaymentWithStripe($reservation_id)
 {
+    $tour = getTour();
+    \Stripe\Stripe::setApiKey($tour->payment_data->secret_key);
+
+    $events = \Stripe\Event::all([
+      'type' => 'checkout.session.completed',
+      'created' => [
+        // Check for events created in the last 10 minutes.
+        'gte' => time() - 10 * 60,
+      ],
+    ]);
+
+    $session = collect($events->autoPagingIterator())->map(function($event) {
+        return $event->data->object;
+    })->filter(function($session) use ($reservation_id) {
+        return $session->client_reference_id==$reservation_id;
+    })->first();
+    if(!isset($session) || !isset($session->payment_intent)) {
+        return;
+    }
+    return $session->payment_intent;
+}
+
+function confirmReservation($data)
+{
+    $email = null;
+    $name = null;
+
+    // its paypal data
+    if(isset($data['txn_id'])) {
+        $reservation_id = $data["item_number"];
+        $confirmation = $data["txn_id"];
+        $email = $data["payer_email"];
+        $name = $data["first_name"].' '.$data["last_name"];
+    }
+
+    // its stripe data
+    if(isset($data['id'])) {
+        $reservation_id = $data["id"];
+        $confirmation = getPaymentWithStripe($reservation_id);
+    }
+
+    if(!isset($confirmation) || is_null($confirmation)) {
+        return;
+    }
+
     $url = apiUrl('/api/reservations/'.$reservation_id.'/confirm');
     $response = post($url, compact('confirmation', 'email', 'name'));
     return json_decode($response);

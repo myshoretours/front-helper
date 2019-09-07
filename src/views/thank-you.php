@@ -1,9 +1,16 @@
 <?php
-if(!isset($_POST["item_number"]) || !isset($_POST["txn_id"])) {
-    echo 'Bad _POST gotten';
+if(isset($_POST["item_number"]) && isset($_POST["txn_id"])) {
+    $reservation = confirmReservation($_POST);
+} else if(isset($_GET['id'])) {
+    $reservation = confirmReservation($_GET);
+} else {
+    echo 'Error';
     return;
 }
-$reservation = confirmReservation($_POST["item_number"], $_POST["txn_id"], $_POST["payer_email"], $_POST["first_name"].' '.$_POST["last_name"]);
+if(!isset($reservation)) {
+    $url = config('app.url');
+    header('location:'.$url);
+}
 ?>
 <div class="container pt-4 pb60">
     <div>

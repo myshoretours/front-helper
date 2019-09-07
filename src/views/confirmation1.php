@@ -30,7 +30,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	    <div class="form-group" id="group_adults">
 	        <label for="adults">Adults - (<?= $tour->adults_description ?>)</label>
 	        <select class="custom-select" id="adults" name="adults" onchange="calc_form(this)" disabled="">
-	            <option value="0,0">Please Select Depart Time</option>
+	            <option value="0">Please Select Depart Time</option>
 	        </select>
 	    </div>
 	<?php endif; ?>
@@ -38,7 +38,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	    <div class="form-group" id="group_senior">
 	        <label for="senior">Senior - (<?= $tour->seniors_description ?>)</label>
 	        <select class="custom-select" id="senior" name="senior" onchange="calc_form(this)" disabled="">
-	            <option value="0,0">Please Select Depart Time</option> 
+	            <option value="0">Please Select Depart Time</option> 
 	        </select>
 	    </div>
 	<?php endif; ?>
@@ -46,7 +46,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	    <div class="form-group" id="group_kids">
 	        <label for="kids">Kids - (<?= $tour->kids_description ?>)</label>
 	        <select class="custom-select" id="kids" name="kids" onchange="calc_form(this)" disabled="">
-	            <option value="0,0">Please Select Depart Time</option>
+	            <option value="0">Please Select Depart Time</option>
 	        </select>
 	    </div>
 	<?php endif; ?>
@@ -54,7 +54,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	    <div class="form-group" id="group_infants">
 	        <label for="infants">Infants - (<?= $tour->infants_description ?>)</label>
 	        <select class="custom-select" id="infants" name="infants" onchange="calc_form(this)" disabled="">
-	            <option value="0,0">Please Select Depart Time</option>
+	            <option value="0">Please Select Depart Time</option>
 	        </select>
 	    </div>
 	<?php endif; ?>
@@ -79,9 +79,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 </div>
 <div class="alert bg-grey grey bold font26 d-flex align-items-center mb42" role="alert">
     <div class="mr-auto">
-
         <span>You Pay Now</span>
-        
     </div>
     <div>
         <span id="reservation_pay">--</span>
@@ -94,5 +92,6 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
     <input type="hidden" id="options" value='<?= createOptions($tour) ?>'>
     <input type="hidden" id="tour_charge_type" value='<?= $tour->charge_type ?>'>
     <input type="hidden" id="tour_charge_data" value='<?= $tour->charge_data ?>'>
+    <input type="hidden" name="total">
     <input type="hidden" name="to_pay">
 </div>
