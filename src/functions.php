@@ -259,7 +259,6 @@ function payWithStripe($reservation)
         'line_items' => [[
             'name' => 'Tour Reservation for '.$tour->name,
             'description' => 'For '.$reservation->total_passengers.' passangers',
-            'images' => [config('app.url').'/assets/img/stripe.jpg'],
             'amount' => ($reservation->total_payed * 100), // Its with cents
             'currency' => $tour->payment_data->currency,
             'quantity' => 1,
