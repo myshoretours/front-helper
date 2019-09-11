@@ -381,4 +381,19 @@ function contactIsValid()
     return $inputs->count() == $total && $capcha;
 }
 
+function excludeDates()
+{
+    $tour = getTour();
+    if($tour->limit_by_day != 1) {
+        return '[]';
+    }
+    $limit = $tour->limit;
+    $result = collect(['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])->map(function($item) use ($limit) {
+        return $limit->$item;
+    })->filter(function($item) {
+        return $item <= 0;
+    })->keys();
+    return '['.collect($result)->implode(', ').']';
+}
+
 ?>
