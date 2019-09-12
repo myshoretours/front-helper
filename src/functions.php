@@ -383,6 +383,9 @@ function contactIsValid()
 
 function excludeDates()
 {
+    if(is_null(config('backend.tour_id'))) {
+        return '[]';
+    }
     $tour = getTour();
     if($tour->limit_by_day != 1) {
         return '[]';
