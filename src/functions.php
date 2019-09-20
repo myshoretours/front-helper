@@ -98,7 +98,7 @@ function max_pax_option()
     $tour = getTour();
     $return = '';
     $return .= "<option value=''>--</option>\n\r";
-    for($i = 1; $i <= $tour->max_pax; $i++) {
+    for($i = $tour->min_pax; $i <= $tour->max_pax; $i++) {
         if($i==100) {
             break;
         }
