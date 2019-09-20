@@ -88,6 +88,7 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 <div class="controls">
     <input type="hidden" id="customer_ID" name="customer_ID" value="<?= $client->id ?>">
     <input type="hidden" id="Base_Pax_Number" value="<?= $tour->base_pax ?>">
+    <input type="hidden" id="Min_Adults_Number" value="<?= $tour->min_adults ?>">
     <input type="hidden" id="Max_Pax_Number" value="<?= $_POST['travelers'] ?>">
     <input type="hidden" id="options" value='<?= createOptions($tour) ?>'>
     <input type="hidden" id="tour_charge_type" value='<?= $tour->charge_type ?>'>
