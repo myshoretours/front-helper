@@ -301,12 +301,18 @@ function confirmReservation($data)
     $email = null;
     $name = null;
 
-    // its paypal data
+    // its paypal data on post
     if(isset($data['txn_id'])) {
         $reservation_id = $data["item_number"];
         $confirmation = $data["txn_id"];
         $email = $data["payer_email"];
         $name = $data["first_name"].' '.$data["last_name"];
+    }
+
+    // its paypal data on get
+    if(isset($data['tx'])) {
+        $reservation_id = $data["item_number"];
+        $confirmation = $data["tx"];
     }
 
     // its stripe data
