@@ -1,7 +1,7 @@
 <?php
 if(isset($_POST["item_number"]) && isset($_POST["txn_id"])) {
     $reservation = confirmReservation($_POST);
-} else if(isset($_GET["item_number"]) && isset($_GET["txn_id"])) {
+} else if(isset($_GET["item_number"]) && isset($_GET["tx"])) {
     $reservation = confirmReservation($_GET);
 } else if(isset($_GET['id'])) {
     $reservation = confirmReservation($_GET);
