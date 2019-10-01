@@ -214,19 +214,22 @@ function payWithPaypal($reservation)
   
     $datos_paypal = array(
         "cmd"             => "_xclick",
+        "business"        => $tour->payment_data->email,
         "lc"              => "US",
-        "currency_code"   => $tour->payment_data->currency,
-        "bn"              => "PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest",
-        "first_name"      => $names[0] ?? 'ND',
-        "last_name"       => $names[1] ?? 'ND',
-        "payer_email"     => $reservation->client->email,
+        "item_name"       => $reservation->tour->name,
         "item_number"     => $reservation->id,
+        "amount"          => $reservation->total_payed,
+        "currency_code"   => $tour->payment_data->currency,
+        "no_note"         => 1,
+        "no_shipping"     => 1,
         'rm'              => 2,
+        "return"          => config('app.url').'/thank-you',
+        "cancel_return"   => config('app.url').'/payment-uncompleted',
+        "bn"              => "PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted",
+        "notify_url"      => config('backend.url').'/webhook/paypal',
     );
 
-    $querystring = "?business=".urlencode($tour->payment_data->email)."&";  
-    $querystring .= "item_name=".urlencode($reservation->tour->name)."&";
-    $querystring .= "amount=".urlencode($reservation->total_payed)."&";
+    $querystring = "?";  
 
     //loop for posted values and append to querystring
     foreach($datos_paypal as $key => $value){
@@ -234,11 +237,7 @@ function payWithPaypal($reservation)
         $querystring .= "$key=$value&";
     }
 
-    // Append paypal return addresses
-    $querystring .= "return=".urlencode(stripslashes(config('app.url').'/thank-you'))."&";
-    $querystring .= "cancel_return=".urlencode(stripslashes(config('app.url').'/payment-uncompleted'));
-
-    // Redirect to paypal IPN
+    // Redirect to paypal
     $paypal_site = 'https://www.paypal.com';
     if($tour->payment_data->sandbox) {
         $paypal_site = 'https://www.sandbox.paypal.com';
@@ -298,15 +297,12 @@ function getPaymentWithStripe($reservation_id)
 
 function confirmReservation($data)
 {
-    $email = null;
-    $name = null;
+    $uses_webhook = true;
 
     // its paypal data on post
     if(isset($data['txn_id'])) {
         $reservation_id = $data["item_number"];
         $confirmation = $data["txn_id"];
-        $email = $data["payer_email"];
-        $name = $data["first_name"].' '.$data["last_name"];
     }
 
     // its paypal data on get
@@ -319,6 +315,7 @@ function confirmReservation($data)
     if(isset($data['id'])) {
         $reservation_id = $data["id"];
         $confirmation = getPaymentWithStripe($reservation_id);
+        $uses_webhook = false;
     }
 
     if(!isset($confirmation) || is_null($confirmation)) {
@@ -326,7 +323,7 @@ function confirmReservation($data)
     }
 
     $url = apiUrl('/api/reservations/'.$reservation_id.'/confirm');
-    $response = post($url, compact('confirmation', 'email', 'name'));
+    $response = post($url, compact('confirmation', 'uses_webhook'));
     return json_decode($response);
 }
 
