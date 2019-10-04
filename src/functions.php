@@ -292,12 +292,23 @@ function getPaymentWithStripe($reservation_id)
     if(!isset($session) || !isset($session->payment_intent)) {
         return;
     }
-    return $session->payment_intent;
+
+    $intent = \Stripe\PaymentIntent::retrieve($session->payment_intent);
+    $charge = collect($intent->charges->data)->first();
+    $balance = $charge->balance_transaction;
+
+    $balance = \Stripe\BalanceTransaction::retrieve($balance);
+    $net = $balance->net / 100;
+    return [
+        'confirmation' => $session->payment_intent,
+        'net_payed' => $net
+    ];
 }
 
 function confirmReservation($data)
 {
     $uses_webhook = true;
+    $net_payed = null;
 
     // its paypal data on post
     if(isset($data['txn_id'])) {
@@ -314,7 +325,9 @@ function confirmReservation($data)
     // its stripe data
     if(isset($data['id'])) {
         $reservation_id = $data["id"];
-        $confirmation = getPaymentWithStripe($reservation_id);
+        $payment = getPaymentWithStripe($reservation_id);
+        $confirmation = $payment['confirmation'];
+        $net_payed = $payment['net_payed'];
         $uses_webhook = false;
     }
 
@@ -323,7 +336,7 @@ function confirmReservation($data)
     }
 
     $url = apiUrl('/api/reservations/'.$reservation_id.'/confirm');
-    $response = post($url, compact('confirmation', 'uses_webhook'));
+    $response = post($url, compact('confirmation', 'uses_webhook', 'net_payed'));
     return json_decode($response);
 }
 
