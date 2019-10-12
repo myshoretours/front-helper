@@ -158,13 +158,13 @@ function reservate($data)
     $date = $data["date"];
     $tour_departure_id = $data["departure"];
     $tour_option = $data["tour-option"];
-    $hotel_name = $data["hotel_name"];
     $pax_adults = $data["adults"] ?? 0;
     $pax_kids = $data["kids"] ?? 0;
     $pax_infant = $data["infants"] ?? 0;
     $pax_senior = $data["senior"] ?? 0;
     $total_payed = $data["to_pay"];
     $total = $data["total"];
+    $additional_fields = json_encode($data["additional_fields"]);
 
     // User stack
     $user_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -190,7 +190,7 @@ function reservate($data)
   
     $ip_costumer = $_SERVER['REMOTE_ADDR'];
     
-    $data = compact('client_id', 'tour_departure_id', 'tour_option_id', 'kids', 'infants', 'adults', 'seniors', 'total', 'hotel_name', 'date', 'sell_url', 'ip_costumer', 'user_agent', 'total_payed');
+    $data = compact('client_id', 'tour_departure_id', 'tour_option_id', 'kids', 'infants', 'adults', 'seniors', 'total', 'additional_fields', 'date', 'sell_url', 'ip_costumer', 'user_agent', 'total_payed');
     $url = apiUrl('/api/tours/'.config('backend.tour_id').'/reservate');
     $response = post($url, $data);
     return json_decode($response);
