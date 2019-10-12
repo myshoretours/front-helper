@@ -65,12 +65,12 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 			<div class="form-group">
 			    <label for="comments"><?= $additional_field->title; ?></label>
 			    <?php if($additional_field->field_type=='text') : ?>
-			    	<input type="text" class="form-control" name="additional_fields[<?= $additional_field->code_id; ?>]" placeholder="<?= $additional_field->description; ?>" <?= $required; ?>>
+			    	<input type="text" class="form-control last-step" name="additional_fields[<?= $additional_field->code_id; ?>]" placeholder="<?= $additional_field->description; ?>" disabled="" <?= $required; ?>>
 			    <?php elseif($additional_field->field_type=='select') : ?>
 			    	<?php $options = collect(explode(',', $additional_field->field_options))->map(function($item) {
 			    		return trim($item);
 			    	})->toArray(); ?>
-			    	<select class="form-control" name="additional_fields[<?= $additional_field->code_id; ?>]" <?= $required; ?>>
+			    	<select class="form-control last-step" name="additional_fields[<?= $additional_field->code_id; ?>]" disabled="" <?= $required; ?>>
 			    		<option value="">---</option>
 			    		<?php foreach($options as $option) : ?>
 			    			<option value="<?= $option; ?>"><?= $option; ?></option>
