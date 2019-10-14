@@ -415,4 +415,9 @@ function excludeDates()
     return '['.collect($result)->implode(', ').']';
 }
 
+function versionCdn($file)
+{
+    return config('cdn.url').'/assets/js/v1.2/'.$file;
+}
+
 ?>
