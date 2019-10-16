@@ -8,7 +8,8 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 <div class="mb48">
 	<div class="form-group" id="group_date">
 	    <label for="date">Select your tour date</label>
-	    <input type="text" class="form-control" name="date" id="date" aria-describedby="date" value="<?= $_POST["date"] ?>" autocomplete="off">
+	    <input type="text" class="form-control" name="date" aria-describedby="date" value="<?= $_POST["date"] ?>" autocomplete="off" disabled="disabled">
+	    <input type="hidden" name="date" value="<?= $_POST["date"] ?>">
 	    <img alt="Image" class="ui-datepicker-trigger" src="<?= config('cdn.url') ?>/assets/img/calendar.gif">
 	</div>
 	<div class="form-group" id="group_departure">
@@ -58,10 +59,27 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
 	        </select>
 	    </div>
 	<?php endif; ?>
-	<div class="form-group" id="group_comments">
-	    <label for="comments">Cruise / Hotel Name</label>
-	    <input type="text" class="form-control" id="comments" name="hotel_name" placeholder="e.g. Hilton Resort / Carnival Valor" disabled="">
-	</div>
+	<?php foreach($tour->additional_fields as $additional_field) : ?>
+		<?php if($additional_field->is_active) : ?>
+			<?php $required = $additional_field->is_required ? 'required="required"' : ''; ?>
+			<div class="form-group">
+			    <label for="comments"><?= $additional_field->title; ?></label>
+			    <?php if($additional_field->field_type=='text') : ?>
+			    	<input type="text" class="form-control last-step" name="additional_fields[<?= $additional_field->code_id; ?>]" placeholder="<?= $additional_field->description; ?>" disabled="" <?= $required; ?>>
+			    <?php elseif($additional_field->field_type=='select') : ?>
+			    	<?php $options = collect(explode(',', $additional_field->field_options))->map(function($item) {
+			    		return trim($item);
+			    	})->toArray(); ?>
+			    	<select class="form-control last-step" name="additional_fields[<?= $additional_field->code_id; ?>]" disabled="" <?= $required; ?>>
+			    		<option value="">---</option>
+			    		<?php foreach($options as $option) : ?>
+			    			<option value="<?= $option; ?>"><?= $option; ?></option>
+			    		<?php endforeach; ?>
+			    	</select>
+			    <?php endif; ?>
+			</div>
+		<?php endif; ?>
+	<?php endforeach; ?>
 </div>
 <div class="alert bg-grey grey bold font16 d-flex align-items-center mb10" role="alert">
     <div class="mr-auto">
@@ -96,3 +114,4 @@ $client = makeClient($_POST["name"], $_POST["email"], $_POST["phone"], $_POST['d
     <input type="hidden" name="total">
     <input type="hidden" name="to_pay">
 </div>
+<button type="submit" style="display:none;"></button>
