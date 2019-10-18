@@ -67,12 +67,27 @@ if(!isset($reservation)) {
                                         <strong>Total Purchase:</strong> $ <?= $reservation->total ?>
                                     </div>                                  
                                 </li>
-                                <li>Please note: Total Purchase is quoted in US Dollars and includes all taxes.</li>
                                 <li class="d-flex align-items-center">
                                     <div>
-                                        <strong>Cruise / Hotel Name:</strong> <?= $reservation->hotel_name ?>
-                                    </div>
+                                        <strong>Paid Today:</strong> $ <?= $reservation->total_payed ?>
+                                    </div>                                  
                                 </li>
+                                <?php if($reservation->total != $reservation->total_payed): ?>
+                                    <li class="d-flex align-items-center">
+                                        <div>
+                                            <strong>Balance:</strong> $ <?= $reservation->total - $reservation->total_payed?>
+                                        </div>                                  
+                                    </li>
+                                <?php endif; ?>
+                                <li>Please note: Total Purchase is quoted in US Dollars and includes all taxes.</li>
+                                <?php foreach($reservation->tour->additional_fields as $key => $additional_field) : ?>
+                                    <?php $values = collect(json_decode($reservation->additional_fields))->values(); ?>
+                                    <li class="d-flex align-items-center">
+                                        <div>
+                                            <strong><?= $additional_field->title; ?>:</strong> <?= $values[$key] ?>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
                             </ul>
                         </div> 
                         <div class="col-lg-6 col-12 d-flex align-items-center justify-content-center mb42">
