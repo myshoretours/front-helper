@@ -79,7 +79,6 @@ if(!isset($reservation)) {
                                         </div>                                  
                                     </li>
                                 <?php endif; ?>
-                                <li>Please note: Total Purchase is quoted in US Dollars and includes all taxes.</li>
                                 <?php foreach($reservation->tour->additional_fields as $key => $additional_field) : ?>
                                     <?php $values = collect(json_decode($reservation->additional_fields))->values(); ?>
                                     <li class="d-flex align-items-center">
