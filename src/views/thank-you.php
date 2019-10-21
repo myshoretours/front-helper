@@ -81,11 +81,11 @@ if(!isset($reservation)) {
                                 <?php endif; ?>
                                 <?php foreach($reservation->tour->additional_fields as $key => $additional_field) : ?>
                                     <?php $values = collect(json_decode($reservation->additional_fields))->values(); ?>
-                                    <li class="d-flex align-items-center">
+                                    <!--<li class="d-flex align-items-center">
                                         <div>
                                             <strong><?= $additional_field->title; ?>:</strong> <?= $values[$key] ?>
                                         </div>
-                                    </li>
+                                    </li>-->
                                 <?php endforeach; ?>
                             </ul>
                         </div> 
